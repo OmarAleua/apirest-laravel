@@ -10,7 +10,7 @@ class ListaDeTareasController extends Controller
     {
 
         $json = array(
-            "detalle" => "no encontrado"
+            "detalle-ListaDeTareasController" => "no encontrado"
         );
 
         echo json_encode($json, true);

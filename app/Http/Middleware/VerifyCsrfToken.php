@@ -12,6 +12,7 @@ class VerifyCsrfToken extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        // 10. recibiendo datos del cliente API
+        'http://localhost.apirest-laravel.com/registro'
     ];
 }
