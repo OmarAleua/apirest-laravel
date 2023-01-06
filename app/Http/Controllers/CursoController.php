@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Curso; //14. Creando el Modelo y Controlador de la tabla Cursos - Instanciamos el Modelo
 use App\Models\Cliente; //15. Solicitando Token de Autorización en Laravel
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB; //19. API REST Inner Join en Laravel
 
 class CursoController extends Controller
 {
@@ -23,8 +24,26 @@ class CursoController extends Controller
 
             if ("Basic " . base64_encode($value["id_cliente"] . ":" . $value["llave_secreta"]) == $token) {
 
-                //crear un objeto = modelo:funcion all 
-                $cursos = Curso::all();
+                if (isset($_GET['page'])) {
+                    //crear un objeto = modelo:funcion all 
+                    //$cursos = Curso::all();
+                    //19. API REST Inner Join en Laravel - aca hacemos el inner join (unimos cursos con clientes)
+                    //20. API REST Funciones de Paginación en Laravel
+                    $cursos = DB::table('cursos')
+                        ->join('clientes', 'clientes.id', '=', 'cursos.id_creador')
+                        ->select('cursos.id', 'cursos.titulo', 'cursos.descripcion', 'cursos.instructor', 'cursos.imagen', 'cursos.id_creador', 'clientes.nombre', 'clientes.apellido')
+                        ->paginate(10);
+                } else {
+                    //crear un objeto = modelo:funcion all 
+                    //$cursos = Curso::all();
+                    //19. API REST Inner Join en Laravel - aca hacemos el inner join (unimos cursos con clientes)
+
+                    $cursos = DB::table('cursos')
+                        ->join('clientes', 'clientes.id', '=', 'cursos.id_creador')
+                        ->select('cursos.id', 'cursos.titulo', 'cursos.descripcion', 'cursos.instructor', 'cursos.imagen', 'cursos.id_creador', 'clientes.nombre', 'clientes.apellido')
+                        ->get();
+                }
+
                 if (!empty($cursos)) {
                     $json = array(
 
@@ -32,6 +51,7 @@ class CursoController extends Controller
                         "total_registros" => count($cursos),
                         "detalles" => $cursos
                     );
+                    return json_encode($json, true); //corta cuando hago un GET por POSTMAN y veo todos los datos que me trae el inner join que acabo de hacer mas arriba
                 } else {
                     $json = array(
 
@@ -96,12 +116,14 @@ class CursoController extends Controller
                     //si falla la validacion 11. validando datos del cliente en laravel
 
                     if ($validator->fails()) {
+                        //21. Ajustes validación en Laravel
+                        $errors = $validator->errors();
                         //var_dump('entra');
                         //die;
                         $jsonarray = array(
 
                             "status" => 404,
-                            "detalle" => "Registro con errores: puede que cualquiera de los items tenga error..."
+                            "detalle" => $errors
 
                         );
 
@@ -299,4 +321,59 @@ class CursoController extends Controller
         } //fin: foreach 
         return json_encode($json, true);
     } //fin: public function store(Request $request)
-}
+
+    //18. API RESTful Borrar un registro de curso en Laravel
+    public function destroy($id, Request $request)
+    {
+        $token = $request->header('Authorization');
+        $clientes = Cliente::all();
+        $json = array();
+
+        foreach ($clientes as $key => $value) {
+
+            if ("Basic " . base64_encode($value["id_cliente"] . ":" . $value["llave_secreta"]) == $token) {
+
+                $validar = Curso::where("id", $id)->get();
+
+                if (!empty($validar)) {
+
+                    if ($validar[0]["id_creador"] == $value["id"]) {
+                        $curso = Curso::where("id", $id)->delete();
+                        $json = array(
+
+                            "status" => 200,
+                            "detalle" => "Se ha eliminado su corso con exito"
+
+                        );
+
+                        return json_encode($json, true);
+                    } else {
+                        $json = array(
+
+                            "status" => 404,
+                            "detalle" => "No esta autorizado para eliminar este curso"
+
+                        );
+
+                        return json_encode($json, true);
+                    }
+                } else {
+
+                    $json = array(
+
+                        "status" => 404,
+                        "detalle" => "El curso no existe"
+
+                    );
+
+                    return json_encode($json, true);
+                } //fin: if (!empty($validar))
+            } //fin: if (base64_encode() == $token)
+        } //fin: foreach
+        return json_encode($json, true);
+    } //fin: public function destroy($id, Request $request)
+
+    //19. API REST Inner Join en Laravel - el inner join de abajo lo cree yo...
+    /* SELECT * FROM cursos cur 
+    inner join clientes cli ON cli.id = cur.id_creador */
+} //fin: class CursoController extends Controller

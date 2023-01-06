@@ -49,12 +49,15 @@ class ClientesController extends Controller
             //si falla la validacion 11. validando datos del cliente en laravel
 
             if ($validator->fails()) {
+                //21. Ajustes validación en Laravel
+                $errors = $validator->errors();
                 //var_dump('entra');
                 //die;
                 $jsonarray = array(
 
                     "status" => 404,
-                    "detalle" => "Registro con errores"
+                    //21. Ajustes validación en Laravel
+                    "detalle" => $errors
 
                 );
 
