@@ -13,6 +13,10 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         // 10. recibiendo datos del cliente API
-        'http://localhost.apirest-laravel.com/registro'
+        'http://localhost.apirest-laravel.com/registro',
+        // 16. API RESTful Crear nuevo registro de curso en Laravel
+        'http://localhost.apirest-laravel.com/curso',
+        //17. API RESTful Editar un registro de curso en Laravel - el * es el id
+        'http://localhost.apirest-laravel.com/curso/*',
     ];
 }

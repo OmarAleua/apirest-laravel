@@ -40,7 +40,7 @@ class ClientesController extends Controller
             $validator = Validator::make($datos, [
                 'nombre' => 'required|string|max:255',
                 'apellido' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:clientes'
+                'email' => 'required|string|email|max:255|unique:clientes' //clientes es el nombre de la tabla en la DB
 
             ]);
 
@@ -71,6 +71,7 @@ class ClientesController extends Controller
                 $cliente->email = $datos["email"];
                 $cliente->id_cliente = str_replace('$', 'a', $id_cliente); //15. Solicitando Token de Autorización en Laravel
                 $cliente->llave_secreta = str_replace('$', 'o', $llave_secreta); //15. Solicitando Token de Autorización en Laravel
+
                 $cliente->save(); //vamos a guardar
 
                 $json = array(
