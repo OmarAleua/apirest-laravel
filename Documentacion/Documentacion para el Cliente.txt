@@ -1,0 +1,25 @@
+Endpoint:
+localhost.apires-laravel.com
+
+Si queremos crear un registro:
+POST /registro
+
+Si queremos tomar todos los cursos:
+GET /curso
+
+Si queremos tomar 1 solo curso:
+GET /curso/* (con el id)
+
+Si queremos crear un nuevo curso:
+POST /curso
+
+Si queremos actualizar un curso:
+PUT /curso/* (* es el id)
+
+Si queremos borrar un curso:
+DELETE /curso/* (* es el id)
+
+Si queremos paginar un curso
+GET /curso?page=* (* es la pagina que quiere ver)
+
+

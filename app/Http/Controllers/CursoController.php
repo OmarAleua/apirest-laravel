@@ -31,7 +31,7 @@ class CursoController extends Controller
                     //20. API REST Funciones de Paginación en Laravel
                     $cursos = DB::table('cursos')
                         ->join('clientes', 'clientes.id', '=', 'cursos.id_creador')
-                        ->select('cursos.id', 'cursos.titulo', 'cursos.descripcion', 'cursos.instructor', 'cursos.imagen', 'cursos.id_creador', 'clientes.nombre', 'clientes.apellido')
+                        ->select('cursos.id', 'cursos.titulo', 'cursos.descripcion', 'cursos.instructor', 'cursos.imagen', 'cursos.precio',  'cursos.id_creador', 'clientes.nombre', 'clientes.apellido')
                         ->paginate(10);
                 } else {
                     //crear un objeto = modelo:funcion all 
@@ -40,7 +40,7 @@ class CursoController extends Controller
 
                     $cursos = DB::table('cursos')
                         ->join('clientes', 'clientes.id', '=', 'cursos.id_creador')
-                        ->select('cursos.id', 'cursos.titulo', 'cursos.descripcion', 'cursos.instructor', 'cursos.imagen', 'cursos.id_creador', 'clientes.nombre', 'clientes.apellido')
+                        ->select('cursos.id', 'cursos.titulo', 'cursos.descripcion', 'cursos.instructor', 'cursos.imagen', 'cursos.precio',  'cursos.id_creador', 'clientes.nombre', 'clientes.apellido')
                         ->get();
                 }
 
